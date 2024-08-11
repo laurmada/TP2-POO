@@ -17,4 +17,4 @@ public:
     void setNome(const string nome);
 };
 
-#endif PESSOA_H
+#endif 

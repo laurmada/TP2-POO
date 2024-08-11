@@ -18,4 +18,4 @@ public:
     string getNome();
 };
 
-#endif PECA_H
+#endif 
