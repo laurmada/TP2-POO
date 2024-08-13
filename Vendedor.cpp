@@ -19,13 +19,23 @@ void Vendedor::cadastrarCliente()
     float kilometragem;
     cout << "\nPreencha os campos abaixo com as informacoes do cliente:" << endl;
     cout << "Nome do cliente: ";
-    cin >> nome;
+    getline(cin, nome);
     cout << "Modelo do veiculo: ";
-    cin >> modelo;
+    getline(cin, modelo);
     cout << "Placa do veiculo: ";
-    cin >> placa;
+    getline(cin, placa);
     cout << "Kilometragem do veiculo: ";
-    cin >> kilometragem;
+    string input;
+    while (true) {
+        getline(cin, input);
+        try {
+            kilometragem = stof(input); // Tenta converter a string para um float
+            break;
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
+    }
     Cliente novoCliente(nome, modelo, placa, kilometragem);
     clientes->push_back(novoCliente);
     cout << "Cliente cadastrado: " << novoCliente.getNome() << endl;
@@ -47,20 +57,31 @@ void Vendedor::gerarOrdemDeServico()
     }
     string pedido;
     int cliente;
-    cout << "Selecione um cliente dentre os cadastrados:" << endl;
+    cout << "Clientes cadastrados:" << endl;
     for (size_t i = 0; i < clientes->size(); i++)
     {
         cout << i + 1 << ". " << (*clientes)[i].getNome() << endl;
     }
-    cin >> cliente;
-    while (cliente < 1 || cliente > static_cast<int>(clientes->size()))
-    {
-        cout << "Digite um cliente valido!" << endl;
-        cin >> cliente;
+    cout << "\nSelecione um cliente: ";
+    string input;
+    while (true) {
+        getline(cin, input);
+
+        try {
+            cliente = stoi(input); // Tenta converter a string para um inteiro
+            if (cliente > 0 && cliente <= static_cast<int>(clientes->size())) {
+                break; // Se o número for válido, sai do loop
+            } else {
+                cout << "Numero invalido! Tente novamente: ";
+            }
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
     }
-    cout << "Preencha os campos abaixo com as informacoes da ordem:" << endl;
+    cout << "\nPreencha os campos abaixo com as informacoes da ordem:" << endl;
     cout << "Pedido: ";
-    cin.ignore();         // Ignorar o caractere de nova linha deixado por cin
+    //cin.ignore();         // Ignorar o caractere de nova linha deixado por cin
     getline(cin, pedido); // Lê a linha inteira incluindo espaços
     OrdemDeServico novaOrdem(pedido, (*clientes)[cliente - 1]);
     ordens->push_back(novaOrdem);
@@ -123,7 +144,6 @@ void Vendedor::aprovarOrcamento() const
         cout << "No momento, nao ha ordens de servico orcadas!" << endl;
         cout << "Pressione 1 para voltar ao menu." << endl;
         string lixo;
-        cin.ignore();
         getline(cin, lixo);
         return;
     }
@@ -131,12 +151,21 @@ void Vendedor::aprovarOrcamento() const
     // selecionar a ordem para gerar o orcamento
     int opcao;
     cout << "Selecione o pedido para aprovar ou recusar o orcamento: " << endl;
-    cin >> opcao;
+    string input;
+    while (true) {
+        getline(cin, input);
 
-    while (opcao < 1 || opcao > quantidade)
-    {
-        cout << "Digite um pedido valida. Tente novamente ";
-        cin >> opcao;
+        try {
+            opcao = stoi(input); // Tenta converter a string para um inteiro
+            if (opcao > 0 && opcao <= quantidade) {
+                break; // Se o número for válido, sai do loop
+            } else {
+                cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
+            }
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
     }
 
     // achando a posicao no vetor da ordem aberta escolhida
@@ -154,12 +183,21 @@ void Vendedor::aprovarOrcamento() const
         }
     }
     // VALIDAR CASO O USUARIO DIGITE UMA STRING
-    cout << "Voce deseja aprovar (1) ou recusar (2) o orcamento " << endl;
-    cin >> opcao;
-    while (opcao < 1 || opcao > 2)
-    {
-        cout << "Digite uma opcao valida! Tente novamente: ";
-        cin >> opcao;
+    cout << "Voce deseja aprovar (1) ou recusar (2) o orcamento? ";
+    while (true) {
+        getline(cin, input);
+
+        try {
+            opcao = stoi(input); // Tenta converter a string para um inteiro
+            if (opcao == 1 || opcao == 2) {
+                break; // Se o número for válido, sai do loop
+            } else {
+                cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
+            }
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
     }
 
     if (opcao == 1)
@@ -175,7 +213,6 @@ void Vendedor::aprovarOrcamento() const
 
     cout << "Pressione 1 para voltar ao menu." << endl;
     string lixo;
-    cin.ignore();
     getline(cin, lixo);
 }
 
@@ -232,20 +269,30 @@ void Vendedor::fecharOrdens()
         cout << "Nao existem ordens abertas!" << endl;
         cout << "Pressione 1 para voltar ao menu." << endl;
         string lixo;
-        cin.ignore();
         getline(cin, lixo);
         return;
     }
     int opcao;
     // selecionar a ordem para fechar
     cout << "Selecione o pedido para fecha-lo: " << endl;
-    cin >> opcao;
 
-    while (opcao < 1 || opcao > quantidade)
-    {
-        cout << "Digite um pedido valido. Tente novamente: ";
-        cin >> opcao;
+    string input;
+    while (true) {
+        getline(cin, input);
+
+        try {
+            opcao = stoi(input); // Tenta converter a string para um inteiro
+            if (opcao > 0 && opcao <= quantidade) {
+                break; // Se o número for válido, sai do loop
+            } else {
+                cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
+            }
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
     }
+
 
     // achando a posicao no vetor da ordem aberta escolhida
     int posicaoVetor = 0, k = 0;
@@ -266,7 +313,6 @@ void Vendedor::fecharOrdens()
     cout << "A ordem foi fechada com sucesso!\n";
     cout << "Pressione 1 para voltar ao menu." << endl;
     string lixo;
-    cin.ignore();
     getline(cin, lixo);
 }
 
@@ -278,10 +324,9 @@ void Vendedor::gerarHistoricoVeiculo()
     cout << "----------------------------------------" << endl;
     string nome, placa;
     cout << "Digite o nome do cliente: ";
-    cin.ignore();
     getline(cin, nome);
     cout << "Digite a placa do veiculo que deseja gerar o historico: ";
-    cin >> placa;
+    getline(cin, placa);
 
     int quantidade = 0;
     cout << "----------------------------------------" << endl;
@@ -335,21 +380,38 @@ void Vendedor::gerarHistoricoVeiculo()
     if (quantidade == 0)
     {
         cout << "O veiculo nao possui historico." << endl;
+        cout << "----------------------------------------";
+
     }
-    cout << "Pressione 1 para voltar ao menu." << endl;
+    cout << "\nPressione 1 para voltar ao menu." << endl;
     string lixo;
-    cin.ignore();
     getline(cin, lixo);
 }
 
 void Vendedor::menu()
 {
+    printf("\ec\e[3j");
     cout << "----------------------------------------" << endl;
     cout << "              Menu Vendedor  " << endl;
     cout << "----------------------------------------\n"<< endl;
     cout << "1. Cadastrar Cliente\n2. Gerar Ordem de Servico\n3. Aprovar ou recusar orcamentos\n4. Fechar ordens de servico\n5. Gerar historico de veiculo\n6. Sair\nEscolha: ";
     int opcao;
-    cin >> opcao;
+    string input;
+    while (true) {
+        getline(cin, input);
+
+        try {
+            opcao = stoi(input); // Tenta converter a string para um inteiro
+            if (opcao == 1 || opcao == 2 || opcao == 3 || opcao == 4 || opcao == 5 || opcao == 6) {
+                break; // Se o número for válido, sai do loop
+            } else {
+                cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
+            }
+        } catch (invalid_argument &e) {
+            // Se a conversão falhar (ou seja, a entrada não é um número válido)
+            cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+        }
+    }
     printf("\ec\e[3j");
     switch (opcao)
     {
@@ -358,7 +420,21 @@ void Vendedor::menu()
         {
             cadastrarCliente();
             cout << "\nDigite 1 para cadastrar outro cliente ou 0 para sair: " << endl;
-            cin >> opcao;
+            string input;
+            while (true) {
+                getline(cin, input);
+                try {
+                    opcao = stoi(input); // Tenta converter a string para um inteiro
+                    if (opcao == 1 || opcao == 0) {
+                        break; // Se o número for válido, sai do loop
+                    } else {
+                        cout << "Numero invalido! Escolha entre as opcoes 1 ou 0. Tente novamente: ";
+                    }
+                } catch (invalid_argument &e) {
+                    // Se a conversão falhar (ou seja, a entrada não é um número válido)
+                    cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+                }
+            }
         } while (opcao == 1);
         printf("\ec\e[3j");
         menu();
@@ -368,6 +444,7 @@ void Vendedor::menu()
         if (clientes->size() == 0)
         {
             gerarOrdemDeServico();
+            menu();
             break;
         }
         else
@@ -375,8 +452,23 @@ void Vendedor::menu()
             do
             {
                 gerarOrdemDeServico();
-                cout << "\nDigite 1 para gerar outra ordem de servico ou 0 para sair: " << endl;
-                cin >> opcao;
+                cout << "\nDigite 1 para gerar outra ordem de servico ou 0 para sair: ";
+                string input;
+                while (true) {
+                    getline(cin, input);
+                    try {
+                        opcao = stoi(input); // Tenta converter a string para um inteiro
+                        if (opcao == 1 || opcao == 0) {
+                            break; // Se o número for válido, sai do loop
+                        } else {
+                            cout << "Numero invalido! Escolha entre as opcoes 1 ou 0. Tente novamente: ";
+                        }
+                    } catch (invalid_argument &e) {
+                        // Se a conversão falhar (ou seja, a entrada não é um número válido)
+                        cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+                    }
+                }
+                printf("\ec\e[3j");
             } while (opcao == 1);
         }
         printf("\ec\e[3j");

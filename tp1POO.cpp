@@ -66,10 +66,26 @@ int main()
 
         // variavel que controla a entrada
         bool verifica = false;
+        string input;
+        int numero;
         cout << "1. Login\n2. Sair\nEscolha: ";
-        int opcao;
-        cin >> opcao;
-        if (opcao == 2) {
+        while (true) {
+            getline(cin, input);
+
+            try {
+                numero = stoi(input); // Tenta converter a string para um inteiro
+                if (numero == 1 || numero == 2) {
+                    break; // Se o número for válido, sai do loop
+                } else {
+                    cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
+                }
+            } catch (invalid_argument &e) {
+                // Se a conversão falhar (ou seja, a entrada não é um número válido)
+                cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
+            }
+        }
+
+        if (numero == 2) {
             printf("\ec\e[3j");
             cout << "----------------------------------------------" << endl;
             cout << "Obrigado por utilizar os servicos da mecanica!" << endl;
@@ -85,57 +101,10 @@ int main()
              << endl;
         string nome, senha;
         cout << "Nome: ";
-        cin >> nome;
+        getline(cin, nome);
         cout << "Senha: ";
-        cin >> senha;
+        getline(cin, senha);
         printf("\ec\e[3j");
-
-        for (size_t i = 0; i < clientes.size(); i++)
-        {
-            cout << "Cliente: " << clientes[i].getNome() << endl;
-            cout << "Carro: " << clientes[i].getCarro().getModelo()
-                 << " - Placa: " << clientes[i].getCarro().getPlaca()
-                 << " - Kilometragem: " << clientes[i].getCarro().getKilometragem() << endl;
-            cout << "-----------------------------" << endl;
-        }
-
-        for (size_t i = 0; i < ordens.size(); i++)
-        {
-            cout << "Pedido: " << ordens[i].getPedido() << endl;
-            cout << "Valor do Orcamento: R$ " << ordens[i].getValorOrcamento() << endl;
-            cout << "Aprovado: " << (ordens[i].isOrcamentoAprovado() ? "Sim" : "Nao") << endl;
-            cout << "Concluido: " << (ordens[i].isServicoConcluido() ? "Sim" : "Nao") << endl;
-            cout << "Cliente: " << ordens[i].getCliente().getNome() << endl;
-            cout << "Carro: " << ordens[i].getCliente().getCarro().getModelo()
-                 << " - Placa: " << ordens[i].getCliente().getCarro().getPlaca()
-                 << " - Kilometragem: " << ordens[i].getCliente().getCarro().getKilometragem() << endl;
-            cout << "Pecas:" << endl;
-            if (ordens[i].getPecas().empty())
-            {
-                cout << "Nenhuma peca cadastrada." << endl;
-            }
-            else
-            {
-                for (auto &peca : ordens[i].getPecas())
-                {
-                    cout << " - " << peca.getNome() << " - R$ " << fixed << setprecision(2) << peca.getPreco() << endl;
-                }
-            }
-
-            cout << "Servicos:" << endl;
-            if (ordens[i].getServicos().empty())
-            {
-                cout << "Nenhum servico cadastrado." << endl;
-            }
-            else
-            {
-                for (auto &servico : ordens[i].getServicos())
-                {
-                    cout << " - " << servico.getNome() << " - R$ " << fixed << setprecision(2) << servico.getPreco() << endl;
-                }
-            }
-            cout << "-----------------------------" << endl;
-        }
 
         // verificando se o login equivale ao do admin
         if (nome == admin.getNome() && admin.verificarSenha(senha))
@@ -167,9 +136,10 @@ int main()
         if (verifica == false)
         {
             cout << "Login invalido!" << endl;
+            cout << "Pressione 1 para voltar ao menu." << endl;
+            string lixo;
+            getline(cin, lixo);
         }
     }
-
-
     return 0;
 }
