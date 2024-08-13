@@ -11,9 +11,14 @@ protected:
     string nome;
 
 public:
+    // destrutor e construtor
     Pessoa();
     Pessoa(const string nome);
+
+    // getter
     string getNome() const;
+
+    // setter
     void setNome(const string nome);
 };
 

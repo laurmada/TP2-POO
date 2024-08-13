@@ -7,9 +7,11 @@
 
 using namespace std;
 
+// classe para representar um funcionario, que herda de pessoa
 class Funcionario : public Pessoa {
 protected:
     string senha;
+
 public:
     // construtor
     Funcionario(const string &nome, const string &senha);

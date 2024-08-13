@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// classe para representar uma ordem de servico
 class OrdemDeServico
 {
 private:
@@ -19,8 +20,9 @@ private:
     bool servicoConcluido;
     bool ordemFechada;
     Cliente cliente;
-    vector<Peca> pecas;
-    vector<Servicos> servicos;
+    vector<Peca> pecas;          // vetor de pecas
+    vector<Servicos> servicos;  // vetor de servicos
+    
 public:
     // construtor
     OrdemDeServico(const string &pedido, Cliente cliente);

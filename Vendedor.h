@@ -11,10 +11,12 @@
 
 using namespace std;
 
+// classe para representar um vendedor, herda de funcionario
 class Vendedor : public Funcionario {
 private:
-    vector<Cliente> *clientes;
-    vector<OrdemDeServico> *ordens;
+    vector<Cliente> *clientes;       // vetor para guardar os clientes
+    vector<OrdemDeServico> *ordens; // vetor para guardar as ordens de servico
+
 public:
     // construtor
     Vendedor(const string &nome, const string &senha, vector<Cliente> *clientes, vector<OrdemDeServico> *ordens);

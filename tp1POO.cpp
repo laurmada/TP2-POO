@@ -17,13 +17,15 @@ using namespace std;
 
 int main()
 {
+    // limpa a tela logo ao iniciar o programa
+    printf("\ec\e[3j");
 
     // inicializacao de vetor para armazenar clientes
     vector<Cliente> clientes;
+
     // inicializacao de vetor de ordens de servico
     vector<OrdemDeServico> ordens;
 
-    printf("\ec\e[3j");
     // inicializacao de um administrador
     Administrador admin("admin", "admin123");
 
@@ -36,7 +38,7 @@ int main()
     vendedores.push_back(vendedor2);
     vendedores.push_back(vendedor3);
 
-    // Adiciona os vendedores para o controle do administrador
+    // adiciona os vendedores para o controle do administrador
     for (size_t i = 0; i < vendedores.size(); i++)
     {
         admin.adicionarVendedor(&(vendedores[i]));
@@ -49,7 +51,7 @@ int main()
     mecanicos.push_back(mecanico1);
     mecanicos.push_back(mecanico2);
 
-    // Adiciona os mecanicos para o controle do administrador
+    // adiciona os mecanicos para o controle do administrador
     for (size_t i = 0; i < mecanicos.size(); i++)
     {
         admin.adicionarMecanico(&(mecanicos[i]));
@@ -64,27 +66,28 @@ int main()
         cout << "----------------------------------------\n"
              << endl;
 
-        // variavel que controla a entrada
+        // variavel que controla o login
         bool verifica = false;
+
+        // pedindo uma opcao e validando
         string input;
         int numero;
         cout << "1. Login\n2. Sair\nEscolha: ";
         while (true) {
             getline(cin, input);
-
             try {
-                numero = stoi(input); // Tenta converter a string para um inteiro
+                numero = stoi(input); // tenta converter o input para inteiro
                 if (numero == 1 || numero == 2) {
-                    break; // Se o número for válido, sai do loop
+                    break; // se for valido, sai do loop
                 } else {
                     cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
                 }
             } catch (invalid_argument &e) {
-                // Se a conversão falhar (ou seja, a entrada não é um número válido)
                 cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
             }
         }
 
+        // caso opcao = 2 finaliza o programa
         if (numero == 2) {
             printf("\ec\e[3j");
             cout << "----------------------------------------------" << endl;
@@ -93,7 +96,7 @@ int main()
             break;
         }
 
-        // limpa o menu
+        // caso seja 1, menu de login
         printf("\ec\e[3j");
         cout << "----------------------------------------" << endl;
         cout << "             Menu de login" << endl;
@@ -113,7 +116,7 @@ int main()
             admin.menu();
         }
 
-        // verificando se o login equivale ao dos vendedores
+        // verificando se o login equivale a algum dos vendedores
         for (size_t i = 0; i < vendedores.size(); i++)
         {
             if (nome == vendedores[i].getNome() && vendedores[i].verificarSenha(senha))
@@ -123,7 +126,7 @@ int main()
             }
         }
 
-        // verificando se o login equivale ao dos mecanicos
+        // verificando se o login equivale a algum dos mecanicos
         for (size_t i = 0; i < mecanicos.size(); i++)
         {
             if (nome == mecanicos[i].getNome() && mecanicos[i].verificarSenha(senha))
@@ -133,6 +136,7 @@ int main()
             }
         }
 
+        // caso login nao bata com o de ninguem
         if (verifica == false)
         {
             cout << "Login invalido!" << endl;

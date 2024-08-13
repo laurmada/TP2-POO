@@ -11,9 +11,14 @@ private:
     float preco;
 
 public:
+    // construtor
     Peca(const string &nome, float preco);
+
+    // setters
     void setNome(string nome);
     void setPreco(float preco);
+
+    // getters
     float getPreco();
     string getNome();
 };

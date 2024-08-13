@@ -13,6 +13,7 @@ void Mecanico::visualizarOrdens() const
     cout << "              Menu Mecanico  " << endl;
     cout << "Ordens de Servico Pendentes de Orcamento  " << endl;
     cout << "----------------------------------------\n"<< endl;
+
     // for percorrendo todo o vetor com ordens de servico
     for (size_t i = 0; i < ordens->size(); i++)
     {
@@ -28,6 +29,7 @@ void Mecanico::visualizarOrdens() const
             cout << "----------------------------------------" << endl;
         }
     }
+    // caso nao hajam ordens, imprime uma mensagem de aviso
     if (quantidade == 0)
     {
         cout << "No momento, nao existem ordens de servico pendentes de orcamento!\n" << endl;
@@ -41,6 +43,7 @@ void Mecanico::visualizarOrdens() const
     }
 }
 
+// metodo para gerar o orcamento de uma ordem de servico
 void Mecanico::gerarOrcamento()
 {
     // visualiza as ordens em aberto
@@ -62,7 +65,7 @@ void Mecanico::gerarOrcamento()
         return;
     }
 
-    // selecionar a ordem para gerar o orcamento
+    // selecionar a ordem para gerar o orcamento e realizar a validacao
     int opcao;
     cout << "Escolha a ordem de servico para gerar o orcamento (digite o numero): ";
     string input;
@@ -98,85 +101,88 @@ void Mecanico::gerarOrcamento()
         }
     }
 
-    // Inserir pecas necessarias
+    // inserir pecas necessarias
     string nomePeca;
     float precoPeca;
     char adicionarPeca = 's';
     cout << "\nPecas Necessarias";
+    // loop para realizar a insercao de pecas
     while (adicionarPeca == 's') {
         cout << "\nInforme o nome da peca: ";
         getline(cin, nomePeca);
         
         cout << "Informe o preco da peca: ";
+        // validacao do preco como um float
         while (true) {
             string input;
             getline(cin, input);
 
             try {
-                precoPeca = stof(input); // Tenta converter a string para um float
-                break; // Se a conversão for bem-sucedida, sai do loop
+                precoPeca = stof(input); 
+                break; 
             } catch (invalid_argument &) {
-                // Se a conversão falhar (ou seja, a entrada não é um número válido)
                 cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
             }
         }
-
+        // adiciona a peca ao vetor de pecas
         (*ordens)[posicaoVetor].getPecas().push_back(Peca(nomePeca, precoPeca));
 
         cout << "\nDeseja adicionar outra peca? (s/n): ";
+        // validacao da resposta: usuario so pode digitar s ou n
         while (true) {
             string input;
             getline(cin, input);
-
-            // Verifica se a entrada é válida
             if (input.length() == 1 && (input[0] == 'n' || input[0] == 's')) {
                 adicionarPeca = input[0];
-                break; // Sai do loop se a entrada for válida
+                break; 
             } else {
                 cout << "Entrada invalida. Tente novamente: ";
             }
         }
     }
 
-    // Inserir servicos necessarios
+    // inserir servicos necessarios
     string nomeServico;
     float precoServico;
     char adicionarServico = 's';
     cout << "\nServicos Necessarios";
+    // loop para realizar a insercao de servicos
     while (adicionarServico == 's')
     {
         cout << "\nInforme o nome do servico: ";
         getline(cin, nomeServico);
 
         cout << "Informe o preco do servico: ";
+        // validacao do preco como um float
         while (true) {
             string input;
             getline(cin, input);
 
             try {
-                precoServico = stof(input); // Tenta converter a string para um float
-                break; // Se a conversão for bem-sucedida, sai do loop
+                precoServico = stof(input); 
+                break; 
             } catch (invalid_argument &) {
-                // Se a conversão falhar (ou seja, a entrada não é um número válido)
                 cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
             }
         }
+        // adiciona o servico ao vetor de servicos
         (*ordens)[posicaoVetor].getServicos().push_back(Servicos(nomeServico, precoServico));
+
         cout << "Deseja adicionar outro servico? (s/n): ";
+        // validacao da resposta: usuario so pode digitar s ou n
         while (true) {
             string input;
             getline(cin, input);
-
-            // Verifica se a entrada é válida
             if (input.length() == 1 && (input[0] == 'n' || input[0] == 's')) {
                 adicionarServico = input[0];
-                break; // Sai do loop se a entrada for válida
+                break; 
             } else {
                 cout << "Entrada invalida. Tente novamente: ";
             }
         }
     }
-    // Calcular o valor total do orcamento
+
+    // calculando o valor total do orcamento
     double valorTotal = 0.0;
     for (auto &peca : (*ordens)[posicaoVetor].getPecas())
     {
@@ -187,9 +193,11 @@ void Mecanico::gerarOrcamento()
         valorTotal += servico.getPreco();
     }
 
+    // setando o valor do orcamento
     (*ordens)[posicaoVetor].setValorOrcamento(valorTotal);
 
     cout << "\nOrcamento gerado com sucesso! Valor total: R$ " << fixed << setprecision(2) << (*ordens)[posicaoVetor].getValorOrcamento() << endl;
+    // alterando a situacao do orcamento da ordem para feito
     (*ordens)[posicaoVetor].setOrcamentoFeito(true);
 
     cout << "Pressione 1 para voltar ao menu." << endl;
@@ -197,6 +205,7 @@ void Mecanico::gerarOrcamento()
     getline(cin, lixo);
 }
 
+// metodo para realizar o servico
 void Mecanico::realizarServico()
 {
     int quantidade = 0;
@@ -205,6 +214,7 @@ void Mecanico::realizarServico()
     cout << "    Servicos Pendentes de Execucao" << endl;
     cout << "----------------------------------------" << endl;
 
+    // iterando sobre o vetor de ordens
     for (size_t i = 0; i < ordens->size(); i++)
     {
         // impressao de todas as ordens que ja possuem orcamento
@@ -218,11 +228,11 @@ void Mecanico::realizarServico()
                     << " - Placa: " << (*ordens)[i].getCliente().getCarro().getPlaca()
                     << " - Kilometragem: " << (*ordens)[i].getCliente().getCarro().getKilometragem() << endl;
             cout << "Pecas Necessarias:" << endl;
-            if ((*ordens)[i].getPecas().empty())
+            if ((*ordens)[i].getPecas().empty()) // se nao houver pecas cadastradas
             {
                 cout << "Nenhuma peca cadastrada." << endl;
             }
-            else
+            else // imprime todas as pecas
             {
                 for (auto &peca : (*ordens)[i].getPecas())
                 {
@@ -230,11 +240,11 @@ void Mecanico::realizarServico()
                 }
             }
             cout << "Servicos:" << endl;
-            if ((*ordens)[i].getServicos().empty())
+            if ((*ordens)[i].getServicos().empty()) // se nao houver servicos cadastrados
             {
                 cout << "Nenhum servico cadastrado." << endl;
             }
-            else
+            else // imprime todos os servicos
             {
                 for (auto &servico : (*ordens)[i].getServicos())
                 {
@@ -255,7 +265,7 @@ void Mecanico::realizarServico()
         return;
     }
 
-    // selecionar a ordem para gerar o orcamento
+    // selecionar e validar a ordem para gerar o orcamento
     int opcao;
     cout << "Selecione o pedido pendente para ser executado: " << endl;
     string input;
@@ -263,14 +273,13 @@ void Mecanico::realizarServico()
         getline(cin, input);
 
         try {
-            opcao = stoi(input); // Tenta converter a string para um inteiro
+            opcao = stoi(input); 
             if (opcao > 0 && opcao <= quantidade) {
-                break; // Se o número for válido, sai do loop
+                break; 
             } else {
                 cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
             }
         } catch (invalid_argument &e) {
-            // Se a conversão falhar (ou seja, a entrada não é um número válido)
             cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
         }
     }
@@ -290,6 +299,7 @@ void Mecanico::realizarServico()
         }
     }
 
+    // alterando a situacao do servico da ordem para concluido
     (*ordens)[posicaoVetor].setServicoConcluido(true);
     cout << "\nO servico foi executado com sucesso!\n";
     cout << "Pressione 1 para voltar ao menu." << endl;
@@ -297,50 +307,50 @@ void Mecanico::realizarServico()
     getline(cin, lixo);
 }
 
+// metodo do menu do mecanico
 void Mecanico::menu() 
 {
+    printf("\ec\e[3j");
     cout << "----------------------------------------" << endl;
     cout << "              Menu Mecanico  " << endl;
     cout << "----------------------------------------\n"<< endl;
     cout << "1. Visualizar Ordens de servico\n2. Gerar Orcamento\n3. Realizar servicos\n4. Sair\nEscolha: ";
+
+    // validando a escolha do usuario
     int opcao;
     string input;
     while (true) {
         getline(cin, input);
 
         try {
-            opcao = stoi(input); // Tenta converter a string para um inteiro
+            opcao = stoi(input); 
             if (opcao == 1 || opcao == 2 || opcao == 3 || opcao == 4) {
-                break; // Se o número for válido, sai do loop
+                break; 
             } else {
                 cout << "Numero invalido! Escolha entre as opcoes 1 ou 2. Tente novamente: ";
             }
         } catch (invalid_argument &e) {
-            // Se a conversão falhar (ou seja, a entrada não é um número válido)
             cout << "Entrada invalida, apenas numeros sao permitidos! Tente novamente: ";
         }
     }
     switch (opcao)
     {
-    case 1:
+    case 1: // visualiza as ordens de servico
         printf("\ec\e[3j");
         visualizarOrdens();
-        printf("\ec\e[3j");
         menu();
         break;
-    case 2:
+    case 2: // visualiza as ordens de servico e gera orcamento
         printf("\ec\e[3j");
         gerarOrcamento();
-        printf("\ec\e[3j");
         menu();
         break;
-    case 3:
+    case 3: // realiza servicos
         printf("\ec\e[3j");
         realizarServico();
-        printf("\ec\e[3j");
         menu();
         break;
-    default:
+    default: // volta ao menu principal do programa
         printf("\ec\e[3j");
         break;
     }

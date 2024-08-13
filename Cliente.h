@@ -12,7 +12,10 @@ private:
     Carro carro;
 
 public:
+    // construtor
     Cliente(const string &nome, const string &modelo, const string &placa, float kilometragem);
+
+    // getter
     Carro &getCarro();
 };
 

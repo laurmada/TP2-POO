@@ -9,13 +9,17 @@
 #include "Cliente.h"
 #include <iomanip>
 
+// classe para representar um mecanico, que herda de funcionario
 class Mecanico : public Funcionario
 {
 private:
-    vector<OrdemDeServico> *ordens;
+    vector<OrdemDeServico> *ordens; // vetor com ordens de servico
+    
 public:
+    // construtor
     Mecanico(const string &nome, const string &senha, vector<OrdemDeServico> *ordens);
 
+    // metodos
     void visualizarOrdens() const;
     void gerarOrcamento();
     void realizarServico();

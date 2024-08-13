@@ -7,15 +7,18 @@
 #include "Funcionario.h" 
 #include <iomanip>
 
+// classe para representar um administrador 
 class Administrador : public Funcionario
 {
 private:
     vector<Funcionario *> vendedores;
     vector<Funcionario *> mecanicos;
-
+    
 public:
+    // construtor
     Administrador(const string &nome, const string &senha);
 
+    // metodos
     void adicionarVendedor(Funcionario *funcionario);
     void adicionarMecanico(Funcionario *funcionario);
     void alterarDadosVendedor();
