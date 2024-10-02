@@ -17,7 +17,7 @@ public class Forca {
     public ImageIcon getImagemForca() {
         String caminhoImagem = "imagens/forca" + estadoAtual + ".png";
         ImageIcon imagem = new ImageIcon(caminhoImagem);
-        Image img = imagem.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        Image img = imagem.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
 }
