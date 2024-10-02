@@ -8,42 +8,52 @@ public class Jogo {
     private int vitorias;
     private int derrotas;
 
+    // construtor de um jogo
     public Jogo() {
+        // define as tentativas restantes do jogo como 6
         this.tentativasRestantes = 6;
+        // inicializa um hashset para conter as letras escolhidas, ja que elas nao podem se repetir
         this.letrasEscolhidas = new HashSet<>();
+        // chama o metodo que carrega a pontuacao do jogador
         carregarPontuacao();
+        // chama o metodo que seleciona uma palavra aleatoria para a rodada atual
         selecionarPalavraAleatoria();
     }
 
+    // metodo para selecionar uma palavra aleatoria
     public void selecionarPalavraAleatoria() {
+        // cria um array de string, le o arquivo e armazena as palavras do arquivo no array
         List<String> palavras = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("palavras.txt"))) {
             String linha;
             while ((linha = br.readLine()) != null) {
+                // as palavras devem ser em letra maiuscula e sem espacos em branco no inicio ou no final
                 palavras.add(linha.trim().toUpperCase());
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar palavras: " + e.getMessage());
         }
-        if (!palavras.isEmpty()) {
-            String palavraSelecionada = palavras.get(new Random().nextInt(palavras.size()));
-            palavraAtual = new Palavra(palavraSelecionada);
-        }
+        // sorteamos uma palavra no vetor gerado
+        Random random = new Random();  // cria um objeto Random
+        int indiceAleatorio = random.nextInt(palavras.size());  // gera um índice aleatório na lista de palavras
+        String palavraSelecionada = palavras.get(indiceAleatorio);  // seleciona a palavra correspondente ao índice gerado
+        palavraAtual = new Palavra(palavraSelecionada); // inicia um objeto palavra com a palavra atual
     }
 
+    // verificando a letra que o usuario clicou
     public boolean verificarLetra(char letra) {
-        letra = Character.toUpperCase(letra);
-        if (letrasEscolhidas.contains(letra)) {
-            return false;
-        }
+        // adicionando a letra escolhida ao set de letras
         letrasEscolhidas.add(letra);
+        // chama metodo da palavra que verifica se existe a letra na palavra
         boolean acertou = palavraAtual.revelarLetra(letra);
+        // caso a letra seja errada, diminui uma tentativa do usuario
         if (!acertou) {
             tentativasRestantes--;
         }
         return acertou;
     }
 
+    // metodo que verifica se o jogo finalizou
     public boolean jogoTerminado() {
         return tentativasRestantes == 0 || palavraAtual.foiRevelada();
     }
@@ -75,13 +85,16 @@ public class Jogo {
         }
     }
 
+    // metodo que retorna a quantidade de tentativas que o usuario possui
     public int getTentativasRestantes() {
         return tentativasRestantes;
     }
 
+    // metodo que retorna a palavra com lacunas
     public String getPalavraComLacunas() {
         return palavraAtual.getPalavraComLacunas();
     }
+
 
     public Set<Character> getLetrasEscolhidas() {
         return letrasEscolhidas;
