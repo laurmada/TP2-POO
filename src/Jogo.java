@@ -99,6 +99,24 @@ public class Jogo {
     public Set<Character> getLetrasEscolhidas() {
         return letrasEscolhidas;
     }
+    public char revelarLetraAleatoria() {
+        List<Integer> indicesNaoRevelados = new ArrayList<>();
+        for (int i = 0; i < palavraAtual.getTamanho(); i++) {
+            if (palavraAtual.getLetraNaPosicao(i) == '_') {
+                indicesNaoRevelados.add(i);  // Adiciona os índices que ainda não foram revelados
+            }
+        }
+
+        if (!indicesNaoRevelados.isEmpty()) {
+            Random random = new Random();
+            int indiceAleatorio = indicesNaoRevelados.get(random.nextInt(indicesNaoRevelados.size()));
+            char letraRevelada = palavraAtual.revelarLetraNaPosicao(indiceAleatorio);
+            letrasEscolhidas.add(letraRevelada);  // Adiciona a letra revelada ao conjunto de letras escolhidas
+            return letraRevelada;
+        }
+
+        return 0;  // Retorna 0 se não houver mais letras para revelar
+    }
 
     public int getVitorias() {
         return vitorias;

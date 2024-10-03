@@ -46,4 +46,18 @@ public class Palavra {
         }
         return palavraComEspacos.toString();
     }
+    public char revelarLetraNaPosicao(int posicao) {
+        palavraAtual[posicao] = palavraOriginal.charAt(posicao);
+        return palavraAtual[posicao];
+    }
+
+    // Método para obter a letra na posição especificada (para verificar se está '_')
+    public char getLetraNaPosicao(int posicao) {
+        return palavraAtual[posicao];
+    }
+
+    // Método para obter o tamanho da palavra
+    public int getTamanho() {
+        return palavraAtual.length;
+    }
 }
