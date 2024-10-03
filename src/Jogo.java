@@ -7,15 +7,18 @@ public class Jogo {
     private Set<Character> letrasEscolhidas;
     private int vitorias;
     private int derrotas;
+    private String nomeJogador;
 
     // construtor de um jogo
-    public Jogo() {
+    public Jogo(String nomeJogador) {
         // define as tentativas restantes do jogo como 6
         this.tentativasRestantes = 6;
         // inicializa um hashset para conter as letras escolhidas, ja que elas nao podem se repetir
         this.letrasEscolhidas = new HashSet<>();
+        //inicializa nome do jogador
+        this.nomeJogador = nomeJogador;
         // chama o metodo que carrega a pontuacao do jogador
-        carregarPontuacao();
+        carregarPontuacao(nomeJogador);
         // chama o metodo que seleciona uma palavra aleatoria para a rodada atual
         selecionarPalavraAleatoria();
     }
@@ -60,29 +63,123 @@ public class Jogo {
 
     public void atualizarPontuacao(boolean venceu) {
         if (venceu) {
-            vitorias++;
+            this.vitorias++;
         } else {
-            derrotas++;
+            this.derrotas++;
         }
-        salvarPontuacao();
+        atualizarArquivoPontuacao();
     }
 
-    private void carregarPontuacao() {
-        try (BufferedReader br = new BufferedReader(new FileReader("pontuacao.txt"))) {
-            vitorias = Integer.parseInt(br.readLine());
-            derrotas = Integer.parseInt(br.readLine());
-        } catch (IOException | NumberFormatException e) {
-            vitorias = 0;
-            derrotas = 0;
+    private void atualizarArquivoPontuacao() {
+        File arquivo = new File("pontuacao.txt");
+        List<String> linhas = new ArrayList<>();
+
+        // Ler todas as linhas do arquivo
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(":");
+                if (partes[0].equals(nomeJogador)) {
+                    linha = nomeJogador + ":" + vitorias + ":" + derrotas; // Atualiza a linha do jogador
+                }
+                linhas.add(linha);
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o arquivo pontuacao.txt: " + e.getMessage());
+        }
+
+        // Sobrescrever o arquivo com as linhas atualizadas
+        try (PrintWriter writer = new PrintWriter(new FileWriter(arquivo))) {
+            for (String linha : linhas) {
+                writer.println(linha);
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao atualizar o arquivo pontuacao.txt: " + e.getMessage());
         }
     }
 
-    private void salvarPontuacao() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("pontuacao.txt"))) {
-            bw.write(vitorias + "\n" + derrotas);
+    // Método para carregar pontuação do jogador
+    public void carregarPontuacao(String nomeJogador) {
+        File arquivo = new File("pontuacao.txt");
+
+        if (!arquivo.exists()) {
+            try {
+                arquivo.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Erro ao criar o arquivo pontuacao.txt: " + e.getMessage());
+                return;
+            }
+        }
+
+        boolean jogadorEncontrado = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] partes = linha.split(":");
+                if (partes[0].equals(nomeJogador)) {
+                    this.vitorias = Integer.parseInt(partes[1]);
+                    this.derrotas = Integer.parseInt(partes[2]);
+                    jogadorEncontrado = true;
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao ler o arquivo pontuacao.txt: " + e.getMessage());
+        }
+
+        // Se o jogador não for encontrado, adiciona-o ao arquivo com pontuação inicial de 0
+        if (!jogadorEncontrado) {
+            adicionarNovoJogador();
+        }
+    }
+
+    private void adicionarNovoJogador() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("pontuacao.txt", true))) {
+            writer.println(nomeJogador + ":0:0");
+        } catch (IOException e) {
+            System.out.println("Erro ao adicionar novo jogador ao arquivo pontuacao.txt: " + e.getMessage());
+        }
+    }
+
+    // Método para salvar pontuação do jogador
+    public void salvarPontuacao(String nomeJogador) {
+        try (BufferedReader br = new BufferedReader(new FileReader("pontuacao.txt"));
+             BufferedWriter bw = new BufferedWriter(new FileWriter("pontuacao.tmp"))) {
+
+            String linha;
+            boolean jogadorEncontrado = false;
+            while ((linha = br.readLine()) != null) {
+                String[] dados = linha.split(",");
+                if (dados[0].equalsIgnoreCase(nomeJogador)) {
+                    linha = nomeJogador + "," + vitorias + "," + derrotas;
+                    jogadorEncontrado = true;
+                }
+                bw.write(linha);
+                bw.newLine();
+            }
+
+            // Se o jogador não foi encontrado, adiciona-o ao final
+            if (!jogadorEncontrado) {
+                bw.write(nomeJogador + "," + vitorias + "," + derrotas);
+                bw.newLine();
+            }
         } catch (IOException e) {
             System.err.println("Erro ao salvar pontuação: " + e.getMessage());
         }
+
+        // Renomeia o arquivo temporário para substituir o original
+        new File("pontuacao.tmp").renameTo(new File("pontuacao.txt"));
+    }
+
+
+    // Métodos para obter vitórias e derrotas
+    public int getVitorias() {
+        return this.vitorias;
+    }
+
+    public int getDerrotas() {
+        return this.derrotas;
     }
 
     // metodo que retorna a quantidade de tentativas que o usuario possui
@@ -118,11 +215,4 @@ public class Jogo {
         return 0;  // Retorna 0 se não houver mais letras para revelar
     }
 
-    public int getVitorias() {
-        return vitorias;
-    }
-
-    public int getDerrotas() {
-        return derrotas;
-    }
 }

@@ -8,7 +8,7 @@ public class InterfaceGrafica {
     private Forca forca;
     private JFrame frame;
     private JPanel painelForca, painelInfo, painelLetras, painelTitulo;
-    private JLabel labelForca, labelPalavra, labelDica, labelLetrasDigitadas, labelTitulo, labelTentativasRestantes;
+    private JLabel labelForca, labelPalavra, labelDica, labelLetrasDigitadas, labelTitulo, labelTentativasRestantes, labelPontuacao;
     private JButton btnNovoJogo, btnVerificar;
     private String nomeJogador;
 
@@ -16,7 +16,7 @@ public class InterfaceGrafica {
     // construtor da interface grafica
     public InterfaceGrafica(String nomeJogador) {
         // inicializa um objeto jogo e um objeto forca
-        this.jogo = new Jogo();
+        this.jogo = new Jogo(nomeJogador);
         this.forca = new Forca();
         this.nomeJogador = nomeJogador;
         // chama o metodo que inicializa os componentes
@@ -127,7 +127,13 @@ public class InterfaceGrafica {
         // adiciona o painel de letras ao frame
         frame.add(painelLetras);
 
-        // Botão Verificar (ao lado dos botões de letras)
+        // adicionando pontuacao
+        labelPontuacao = new JLabel("Vitórias: " + jogo.getVitorias() + " | Derrotas: " + jogo.getDerrotas());
+        labelPontuacao.setFont(new Font("Arial", Font.BOLD, 14));
+        labelPontuacao.setBounds(50, 260, 300, 30); // Ajuste a posição conforme necessário
+        frame.add(labelPontuacao);
+
+        // botao de dica
         btnVerificar = new JButton("Dica");
         btnVerificar.setBounds(50, 500, 200, 30);  // Posicionamento manual
         frame.add(btnVerificar);
@@ -138,6 +144,7 @@ public class InterfaceGrafica {
             }
         });
         frame.setVisible(true);
+
     }
 
     // metodo que verifica se o usuario acertou a letra clicada
@@ -150,7 +157,7 @@ public class InterfaceGrafica {
         atualizarInterface();
     }
     private void novoJogo() {
-        jogo = new Jogo();  // Reinicia o objeto Jogo
+        jogo = new Jogo(nomeJogador);  // Reinicia o objeto Jogo
         forca = new Forca();  // Reinicia o objeto Forca
         atualizarInterface();
         // Remove todos os componentes antigos do painel de letras
@@ -178,7 +185,7 @@ public class InterfaceGrafica {
 
     private void reiniciarJogo() {
         // Recria os objetos do jogo e da forca
-        jogo = new Jogo();
+        jogo = new Jogo(nomeJogador);
         forca = new Forca();
         atualizarInterface();
         // Remove todos os componentes antigos do painel de letras
@@ -223,9 +230,12 @@ public class InterfaceGrafica {
         labelPalavra.setText("Palavra: " + jogo.getPalavraComLacunas());
         // alterando as letras que ja foram selecionadas usando html
         labelLetrasDigitadas.setText("<html>Letras já selecionadas:<br>" + jogo.getLetrasEscolhidas() + "</html>");
-
+        // atualizando a pontuacao
+        labelPontuacao.setText("Vitórias: " + jogo.getVitorias() + " | Derrotas: " + jogo.getDerrotas());
         // chama um metodo que verifica se o jogo acabou (usuario acertou palavra ou acabaram tentativas)
         if (jogo.jogoTerminado()) {
+            boolean venceu = jogo.getTentativasRestantes() > 0;
+            jogo.atualizarPontuacao(venceu);
             // cria uma caixa de dialogo mostrando o resultado e dando opcao de jogar novamente
             String mensagem = jogo.getTentativasRestantes() > 0 ? "Você venceu!" : "Você perdeu!";
             int option = JOptionPane.showConfirmDialog(frame, mensagem + "\nDeseja jogar novamente?", "Fim de jogo", JOptionPane.YES_NO_OPTION);
